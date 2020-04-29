@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class BookListComponent implements OnInit {
   books: Book[] = [];
   currentCategoryId: number;
-
+  searchMode: boolean;
   constructor(private bookService: BookService, private _activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {

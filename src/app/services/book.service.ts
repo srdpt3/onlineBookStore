@@ -28,9 +28,12 @@ export class BookService {
     );
   }
 
-  searchBooks(keyword: string): Observable<Book[]> {
-    const searchUrl = `${this.baseUrl}/search/searchbykeyword?name=${keyword}`;
-    return this.getBooksList(searchUrl);
+  searchBooks(keyword: string, currentPage: number, pageSize: number): Observable<GetResponseBooks> {
+    const searchUrl = `${this.baseUrl}/search/searchbykeyword?name=${keyword}&page=${currentPage}&size=${pageSize}`;
+    console.log(searchUrl);
+
+    // return this.getBooksList(searchUrl);
+    return this.httpClient.get<GetResponseBooks>(searchUrl);
   }
 
   private getBooksList(searchUrl: string): Observable<Book[]> {
@@ -47,11 +50,15 @@ export class BookService {
 interface GetResponseBooks {
   _embedded: {
     books: Book[];
-  }
+  },
   page: {
+    //cureent page
     size: number,
+    //total number of records in database
     totalElements: number,
+    //total number of pages, starts from 0 index
     totalPages: number,
+    //current page
     number: number
   }
 }

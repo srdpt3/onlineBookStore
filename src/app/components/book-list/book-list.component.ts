@@ -2,6 +2,7 @@ import { BookService } from './../../services/book.service';
 import { Component, OnInit } from '@angular/core';
 import { Book } from 'src/app/common/book';
 import { ActivatedRoute } from '@angular/router';
+import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'book-list',
@@ -17,12 +18,15 @@ export class BookListComponent implements OnInit {
   // pageIfItems: Array<Book>;
 
   // New properties for server size paging
-  currentPage: number = 1;
-  pageSize: number = 5;
+  currentPage: number = 5;
+  pageSize: number = 1;
   totalRecords: number = 0;
 
 
-  constructor(private bookService: BookService, private _activatedRoute: ActivatedRoute) { }
+  constructor(private bookService: BookService, private _activatedRoute: ActivatedRoute, _config: NgbPaginationConfig) {
+    _config.maxSize = 3;
+    _config.boundaryLinks = true;
+  }
 
   ngOnInit() {
     this._activatedRoute.paramMap.subscribe(() => {
@@ -64,6 +68,11 @@ export class BookListComponent implements OnInit {
       this.currentPage = 1;
     }
     this.previousCategoryId = this.currentCategoryId;
+
+
+    console.log('current page size', this.currentPage - 1);
+
+
     this.bookService.getBooks(this.currentCategoryId, this.currentPage - 1, this.pageSize).subscribe(
 
 
@@ -74,18 +83,21 @@ export class BookListComponent implements OnInit {
       // this.totalRecords = data.page.totalElements;
       // this.pageSize = data.page.size;
 
-      this.processingBookData())
+      this.processResult())
 
 
   }
   handleSearchBooks() {
     const keyword: string = this._activatedRoute.snapshot.paramMap.get('keyword');
-    this.bookService.searchBooks(keyword).subscribe(data => {
-      console.log(data);
-
-      this.books = data;
-    });
+    this.bookService.searchBooks(keyword, this.currentPage - 1, this.pageSize).subscribe(this.processResult());
   }
+
+
+  addToCart(book: Book) {
+    console.log("Addto Cart" + book.name);
+
+  }
+
 
   updatePageSize(pageSize: number) {
     this.pageSize = pageSize;
@@ -93,24 +105,13 @@ export class BookListComponent implements OnInit {
     this.listBooks();
   }
 
-  processingBookData() {
-
-    // This is what we are getting from server
-    //   "page": {
-    //     "size": 20,
-    //     "totalElements": 40,
-    //     "totalPages": 2,
-    //     "number": 0
-    // }
-
-
+  processResult() {
     return data => {
       this.books = data._embedded.books;
       this.currentPage = data.page.number + 1;
       this.totalRecords = data.page.totalElements;
       this.pageSize = data.page.size;
     }
-
   }
 
 }

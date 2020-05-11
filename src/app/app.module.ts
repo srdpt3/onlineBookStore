@@ -11,6 +11,7 @@ import { SearchComponent } from './components/search/search.component';
 import { BookDetailsComponent } from './components/book-details/book-details.component';
 import { JwPaginationComponent } from 'jw-angular-pagination';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +19,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BookCategoryComponent,
     SearchComponent,
     BookDetailsComponent,
-    JwPaginationComponent
+    JwPaginationComponent,
+    CartStatusComponent
   ],
   imports: [
     BrowserModule,
